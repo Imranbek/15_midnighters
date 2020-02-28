@@ -22,8 +22,10 @@ def load_attempts():
 
 
 def get_users_information(page: int = 1):
-    url = 'http://devman.org/api/challenges/solution_attempts/?page={}'.format(page)
-    response = requests.get(url=url)
+    url = 'http://devman.org/api/challenges/solution_attempts/'
+    params = {'page': page}
+    response = requests.get(url=url,
+                            params=params)
     if (response.status_code != 200) or (not response.text):
         return None
     users_information = [json.loads(response.text)['records']]
