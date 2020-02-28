@@ -8,8 +8,8 @@ import requests
 def main():
     user_data_generator = load_attempts()
 
-    for users_data in next(user_data_generator):
-        midnighters = get_midnighters(users_data)
+    for users_data in user_data_generator:
+        midnighters = get_midnighters(users_data[0])
         print_users_information(midnighters)
 
 
