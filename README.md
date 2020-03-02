@@ -16,8 +16,13 @@ $ python seek_dev_nighters.py
 
 # Output example:
 ```
-User with name User1 sent task to check at 2020-02-21 00:10:35
-User with name User2 sent task to check at 2020-02-13 00:30:10
+User with name User1 sent task to check at:
+	2020-02-20 00:10:35
+	2020-02-15 02:08:10
+------------------------------
+User with name User2 sent task to check at:
+	2020-01-29 00:12:26
+------------------------------
 ```
 
 # Project Goals
