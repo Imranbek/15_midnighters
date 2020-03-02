@@ -18,7 +18,7 @@ def load_attempts():
     attempt = True
     while attempt:
         attempt = get_attempt(page=page)
-        if attempt: 
+        if attempt:
             page += 1
             yield attempt
 
@@ -28,7 +28,8 @@ def get_attempt(page: int = 1):
     params = {'page': page}
     response = requests.get(url=url,
                             params=params)
-    if (response.status_code != 200) or (not response.text):
+
+    if not response.ok:
         return None
     users_information = [json.loads(response.text)['records']]
 
