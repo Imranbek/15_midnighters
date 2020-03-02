@@ -6,22 +6,22 @@ import requests
 
 
 def main():
-    user_data_generator = load_attempts()
+    attempts = load_attempts()
 
-    for users_data in user_data_generator:
+    for users_data in attempts:
         midnighters = get_midnighters(users_data[0])
         print_users_information(midnighters)
 
 
 def load_attempts():
     page = 1
-    while get_users_information(page=page):
-        users_information = get_users_information(page=page)
+    while get_attempt(page=page):
+        attempt = get_attempt(page=page)
         page += 1
-        yield users_information
+        yield attempt
 
 
-def get_users_information(page: int = 1):
+def get_attempt(page: int = 1):
     url = 'http://devman.org/api/challenges/solution_attempts/'
     params = {'page': page}
     response = requests.get(url=url,
