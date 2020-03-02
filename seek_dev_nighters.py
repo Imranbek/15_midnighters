@@ -31,7 +31,7 @@ def get_attempt(page: int = 1):
 
     if not response.ok:
         return None
-    users_information = [json.loads(response.text)['records']]
+    users_information = [response.json()['records']]
 
     return users_information
 
