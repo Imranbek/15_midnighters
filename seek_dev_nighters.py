@@ -15,10 +15,12 @@ def main():
 
 def load_attempts():
     page = 1
-    while get_attempt(page=page):
+    attempt = True
+    while attempt:
         attempt = get_attempt(page=page)
-        page += 1
-        yield attempt
+        if attempt: 
+            page += 1
+            yield attempt
 
 
 def get_attempt(page: int = 1):
