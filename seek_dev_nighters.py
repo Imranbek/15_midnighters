@@ -1,6 +1,7 @@
+import argparse
 from collections import defaultdict
 from datetime import datetime, timedelta
-import argparse
+
 import pytz
 import requests
 
@@ -113,6 +114,7 @@ def check_value_none_zero_or_positive_number(parameter_value):
         return True
 
     return parameter_value >= 0
+
 
 if __name__ == '__main__':
     main()
