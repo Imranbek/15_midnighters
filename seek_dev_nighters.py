@@ -106,8 +106,14 @@ def normalize_date_time_to_print(date_time: datetime):
 
 def parse_parameters():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-ht', '--hour_to', type=int, default=6, choices=range(0, 25))
-    parser.add_argument('-hf', '--hour_from', type=int, default=0, choices=range(0, 25))
+    parser.add_argument('-ht', '--hour_to',
+                        type=int,
+                        default=6,
+                        choices=range(25))
+    parser.add_argument('-hf', '--hour_from',
+                        type=int,
+                        default=0,
+                        choices=range(25))
 
     parameters = parser.parse_args()
     return parameters
