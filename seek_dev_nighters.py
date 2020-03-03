@@ -7,13 +7,12 @@ import requests
 
 def main():
     attempts = load_attempts()
-    all_midnighters = defaultdict(list)
-    for users_data in attempts:
-        midnighters = get_midnighters(users_data)
-        for midnighter in midnighters:
-            all_midnighters[midnighter['username']].append(midnighter)
+    midnighters = defaultdict(list)
+    midnighte_attempts = get_midnight_attempts(attempts)
+    for midnighte_attempt in midnighte_attempts:
+        midnighters[midnighte_attempt['username']].append(midnighte_attempt)
 
-    print_users_information(all_midnighters)
+    print_midnighters(midnighters)
 
 
 def load_attempts():
@@ -34,19 +33,19 @@ def get_attempts(page: int = 1):
 
     if not response.ok:
         return None
-    users_information = [response.json()['records']]
+    send_to_check_attempts = response.json()['records']
 
-    return users_information
+    return send_to_check_attempts
 
 
-def get_midnighters(users_information: list):
+def get_midnight_attempts(attempts):
     hour_from = timedelta(hours=0, minutes=00)
     hour_to = timedelta(hours=6, minutes=00)
-    midnighters = []
-    for user_information in users_information:
-        timezone = pytz.timezone(user_information['timezone'])
+    midnight_attempts = []
+    for attempt in attempts:
+        timezone = pytz.timezone(attempt['timezone'])
         check_time = datetime.fromtimestamp(
-            user_information['timestamp'],
+            attempt['timestamp'],
             tz=timezone)
 
         pushing_time = timedelta(
@@ -57,34 +56,27 @@ def get_midnighters(users_information: list):
                 time_to_check=pushing_time,
                 time_from=hour_from,
                 time_to=hour_to):
-            user_information.update({'date_time': check_time})
-            midnighters.append(user_information)
+            attempt.update({'date_time': check_time})
+            midnight_attempts.append(attempt)
 
-    return midnighters
+    return midnight_attempts
 
 
 def is_time_in_delta(time_to_check: timedelta,
                      time_from: timedelta,
                      time_to: timedelta):
-    """ Знаю, что в is_time_in_delta легче сравнить простые числа,
-     но я здесь следую принципу 'работать со временем как со временем',
-     ибо если граничные параметры изменятся, проще поменять
-     или добавить дни(часы, минуты, секунды) во входных параметрах,
-     чем дописывать дополнительные проверки с простыми числами.
-     Если моя идея не верна или не находит отклика,
-     на повторной доработке это исправлю."""
     return time_from < time_to_check < time_to
 
 
-def print_users_information(users_information: dict):
-    for user_name, user_information in users_information.items():
+def print_midnighters(midnighters: dict):
+    for user_name, attempts in midnighters.items():
         row = 'User with name {} ' \
               'sent task to check at:'.format(user_name)
         print(row)
-        for check_setting_attempt in user_information:
-            check_setting_time = str(normalize_date_time_to_print(
-                check_setting_attempt['date_time']))
-            print('\t' + check_setting_time)
+        for attempt in attempts:
+            attempt_time = attempt['date_time'].strftime("%m-%d-%Y %H:%M:%S")
+
+            print('\t' + attempt_time)
         print('------------------------------')
 
 
