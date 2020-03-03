@@ -10,6 +10,10 @@ def main():
     parameters = parse_parameters()
     hour_from = parameters.hour_from
     hour_to = parameters.hour_to
+    assert is_hour_from_less_than_hour_to(hour_from=hour_from,
+                                          hour_to=hour_to), \
+        'Hour_to less or equal with hour_from. ' \
+        'Please restart script with hour_from less than hour_to.'
 
     for parameter in [hour_from, hour_to]:
         assert check_value_none_zero_or_positive_number(parameter), \
@@ -102,8 +106,8 @@ def normalize_date_time_to_print(date_time: datetime):
 
 def parse_parameters():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-ht', '--hour_to', type=int, default=6)
-    parser.add_argument('-hf', '--hour_from', type=int, default=0)
+    parser.add_argument('-ht', '--hour_to', type=int, default=6, choices=range(0, 25))
+    parser.add_argument('-hf', '--hour_from', type=int, default=0, choices=range(0, 25))
 
     parameters = parser.parse_args()
     return parameters
@@ -116,5 +120,17 @@ def check_value_none_zero_or_positive_number(parameter_value):
     return parameter_value >= 0
 
 
+def is_hour_from_less_than_hour_to(hour_from, hour_to):
+    return hour_to > hour_from
+
+
 if __name__ == '__main__':
     main()
+
+
+class HourAction(argparse.Action):
+
+    def __call__(self, parser, namespace, hour, option_string=None):
+        hour = int(hour)
+        if 0 > hour > 24:
+            raise argparse.ArgumentError("Hour value should be from 0 to 24")
