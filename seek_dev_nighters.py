@@ -1,14 +1,25 @@
 from collections import defaultdict
 from datetime import datetime, timedelta
-
+import argparse
 import pytz
 import requests
 
 
 def main():
+    parameters = parse_parameters()
+    hour_from = parameters.hour_from
+    hour_to = parameters.hour_to
+
+    for parameter in [hour_from, hour_to]:
+        assert check_value_none_zero_or_positive_number(parameter), \
+            'One ore more parameters are negative. ' \
+            'Please restart script with positive numeric parameters.'
+
     attempts = load_attempts()
     midnighters = defaultdict(list)
-    midnighte_attempts = get_midnight_attempts(attempts)
+    midnighte_attempts = get_midnight_attempts(attempts=attempts,
+                                               hour_from=hour_from,
+                                               hour_to=hour_to)
     for midnighte_attempt in midnighte_attempts:
         midnighters[midnighte_attempt['username']].append(midnighte_attempt)
 
@@ -38,9 +49,11 @@ def get_attempts(page: int = 1):
     return send_to_check_attempts
 
 
-def get_midnight_attempts(attempts):
-    hour_from = timedelta(hours=0, minutes=00)
-    hour_to = timedelta(hours=6, minutes=00)
+def get_midnight_attempts(attempts,
+                          hour_from: int,
+                          hour_to: int):
+    hour_from = timedelta(hours=hour_from)
+    hour_to = timedelta(hours=hour_to)
     midnight_attempts = []
     for attempt in attempts:
         timezone = pytz.timezone(attempt['timezone'])
@@ -85,6 +98,21 @@ def normalize_date_time_to_print(date_time: datetime):
 
     return date_time_to_print
 
+
+def parse_parameters():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-ht', '--hour_to', type=int, default=6)
+    parser.add_argument('-hf', '--hour_from', type=int, default=0)
+
+    parameters = parser.parse_args()
+    return parameters
+
+
+def check_value_none_zero_or_positive_number(parameter_value):
+    if parameter_value is None:
+        return True
+
+    return parameter_value >= 0
 
 if __name__ == '__main__':
     main()
