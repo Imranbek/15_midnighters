@@ -20,13 +20,13 @@ def load_attempts():
     page = 1
     attempt = True
     while attempt:
-        attempt = get_attempt(page=page)
+        attempt = get_attempts(page=page)
         if attempt:
             page += 1
             yield from attempt
 
 
-def get_attempt(page: int = 1):
+def get_attempts(page: int = 1):
     url = 'http://devman.org/api/challenges/solution_attempts/'
     params = {'page': page}
     response = requests.get(url=url,
@@ -41,7 +41,7 @@ def get_attempt(page: int = 1):
 
 def get_midnighters(users_information: list):
     hour_from = timedelta(hours=0, minutes=00)
-    hour_to = timedelta(hours=5, minutes=59)
+    hour_to = timedelta(hours=6, minutes=00)
     midnighters = []
     for user_information in users_information:
         timezone = pytz.timezone(user_information['timezone'])
